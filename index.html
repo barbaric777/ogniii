@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Огонь по кругу</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background: #6b6767;
+        color: white;
+        font-family: sans-serif;
+        user-select: none;
+      }
+
+      .game-area {
+        position: relative;
+        width: 300px;
+        height: 350px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+      }
+
+      #target-img {
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 15px;
+        position: absolute;
+        bottom: 40px;
+        z-index: 1;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      #fire-effect {
+        width: 60px;
+        height: 60px;
+        background: radial-gradient(
+          circle,
+          #fff,
+          #ffeb3b,
+          #f44336,
+          transparent
+        );
+        border-radius: 50% 50% 20% 20%;
+        filter: blur(12px);
+        z-index: 2;
+        pointer-events: none;
+        opacity: 0.9;
+      }
+
+      #burn-btn {
+        margin-top: 30px;
+        padding: 20px 50px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: white;
+        background: linear-gradient(#ff5722, #bf360c);
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(255, 87, 34, 0.4);
+      }
+
+      #burn-btn:active {
+        transform: scale(0.95);
+      }
+
+      .info {
+        margin-top: 20px;
+        color: #666;
+        font-size: 0.8rem;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="game-area">
+      <img id="target-img" src="" alt="Цель" />
+
+      <div id="fire-effect"></div>
+    </div>
+
+    <button id="burn-btn"></button>
+
+    <audio
+      id="win-sound"
+      src="d0b2d0b8d0b7d0b3-d181d0b2d0b8d0bdd18cd0b8.mp3"
+    ></audio>
+
+    <script>
+      const img = document.getElementById("target-img");
+      const fire = document.getElementById("fire-effect");
+      const btn = document.getElementById("burn-btn");
+      const winSound = document.getElementById("win-sound");
+
+      const images = [
+        "photo_2026-03-24_20-20-27.jpg",
+        "photo_2026-03-24_20-20-25.jpg",
+      ];
+
+      let currentIndex = 0;
+      let fireSize = 60;
+
+      img.src = images[currentIndex];
+
+      function updateGame() {
+        fire.style.width = fireSize + "px";
+        fire.style.height = fireSize + "px";
+
+        if (fireSize >= 230) {
+          winSound.play();
+          fireSize = 60;
+          updateGame();
+        }
+      }
+
+      btn.addEventListener("click", () => {
+        fireSize += 25;
+        updateGame();
+      });
+
+      setInterval(() => {
+        if (fireSize > 60) {
+          fireSize -= 3;
+          updateGame();
+        }
+      }, 100);
+
+      img.addEventListener("click", () => {
+        currentIndex = (currentIndex + 1) % images.length;
+        img.src = images[currentIndex];
+        fireSize = 60;
+        updateGame();
+      });
+
+      img.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        fireSize = 60;
+        updateGame();
+      });
+    </script>
+  </body>
+</html>
